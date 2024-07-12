@@ -3,13 +3,289 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Documentation</title>
-    
+    <title>Strobe API Documentation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1, h2, h3 {
+            color: #333;
+        }
+        h2 {
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+        }
+        h3 {
+            margin-top: 20px;
+        }
+        p, pre {
+            color: #666;
+        }
+        pre {
+            background-color: #f9f9f9;
+            padding: 10px;
+            overflow-x: auto;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        pre code {
+            font-size: 14px;
+            font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+        }
+        code {
+            font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+            background-color: #f5f5f5;
+            padding: 2px 4px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 5px;
+        }
+    </style>
 </head>
 <body>
     <div>
-        <h1>Documentation</h1>
+        <h1>Strobe API Documentation</h1>
         <p>Welcome to the Strobe API documentation! This API is designed for the Strobe application, a comprehensive platform dedicated to documentary sports. Strobe allows users to explore, manage, and enjoy a vast collection of sports documentaries, providing detailed information and media content about various sports events and personalities.</p>
     </div>
+
+    <h2>Endpoints</h2>
+
+    <h3>/users</h3>
+    <p><strong>POST /users</strong></p>
+    <p><strong>Description:</strong> Create a new user</p>
+    <pre>
+Request Body:
+{
+  "name": "string"
+}
+    </pre>
+    <p><strong>Response:</strong></p>
+    <pre>
+Status: 201 Created
+{
+  "id": "string",
+  "name": "string",
+  "favouriteMovies": []
+}
+    </pre>
+    <pre>
+Status: 400 Bad Request
+"users need names"
+    </pre>
+
+    <p><strong>PUT /users/:id</strong></p>
+    <p><strong>Description:</strong> Update a user by ID</p>
+    <pre>
+Request Parameters:
+{
+  "id": "number"
+}
+Request Body:
+{
+  "name": "string"
+}
+    </pre>
+    <p><strong>Response:</strong></p>
+    <pre>
+Status: 200 OK
+{
+  "id": "number",
+  "name": "string",
+  "favouriteMovies": ["array"]
+}
+    </pre>
+    <pre>
+Status: 400 Bad Request
+"No such user"
+    </pre>
+
+    <p><strong>POST /users/:id/:movieTitle</strong></p>
+    <p><strong>Description:</strong> Add a favorite movie for a user by ID</p>
+    <pre>
+Request Parameters:
+{
+  "id": "number",
+  "movieTitle": "string"
+}
+    </pre>
+    <p><strong>Response:</strong></p>
+    <pre>
+Status: 200 OK
+"${movieTitle} has been added to user ${id}'s array"
+    </pre>
+    <pre>
+Status: 400 Bad Request
+"No such user"
+    </pre>
+
+    <p><strong>DELETE /users/:id/:movieTitle</strong></p>
+    <p><strong>Description:</strong> Remove a favorite movie for a user by ID</p>
+    <pre>
+Request Parameters:
+{
+  "id": "number",
+  "movieTitle": "string"
+}
+    </pre>
+    <p><strong>Response:</strong></p>
+    <pre>
+Status: 200 OK
+"${movieTitle} has been removed from ${id}'s array"
+    </pre>
+    <pre>
+Status: 400 Bad Request
+"No such user"
+    </pre>
+
+    <p><strong>DELETE /users/:id</strong></p>
+    <p><strong>Description:</strong> Delete a user by ID</p>
+    <pre>
+Request Parameters:
+{
+  "id": "number"
+}
+    </pre>
+    <p><strong>Response:</strong></p>
+    <pre>
+Status: 200 OK
+"user ${id} has been deleted"
+    </pre>
+    <pre>
+Status: 400 Bad Request
+"No such user"
+    </pre>
+
+    <h3>/movies</h3>
+    <p><strong>GET /movies</strong></p>
+    <p><strong>Description:</strong> Get all movies</p>
+    <p><strong>Response:</strong></p>
+    <pre>
+Status: 200 OK
+[
+  {
+    "id": "uuid",
+    "title": "string",
+    "description": "string",
+    "genre": {
+      "name": "string",
+      "description": "string"
+    },
+    "director": {
+      "name": "string",
+      "bio": "string",
+      "birth": "date"
+    },
+    "imageURL": "url",
+    "featured": "boolean"
+  }
+]
+    </pre>
+
+    <h3>/movies/:title</h3>
+    <p><strong>GET /movies/:title</strong></p>
+    <p><strong>Description:</strong> Get a movie by title</p>
+    <pre>
+Request Parameters:
+{
+  "title": "string"
+}
+    </pre>
+    <p><strong>Response:</strong></p>
+    <pre>
+Status: 200 OK
+{
+  "id": "uuid",
+  "title": "string",
+  "description": "string",
+  "genre": {
+    "name": "string",
+    "description": "string"
+  },
+  "director": {
+    "name": "string",
+    "bio": "string",
+    "birth": "date"
+  },
+  "imageURL": "url",
+  "featured": "boolean"
+}
+    </pre>
+    <pre>
+Status: 404 Not Found
+"No such movie"
+    </pre>
+
+    <h3>/movies/genre/:genreName</h3>
+    <p><strong>GET /movies/genre/:genreName</strong></p>
+    <p><strong>Description:</strong> Get movies by genre</p>
+    <pre>
+Request Parameters:
+{
+  "genreName": "string"
+}
+    </pre>
+    <p><strong>Response:</strong></p>
+    <pre>
+Status: 200 OK
+{
+  "name": "string",
+  "description": "string"
+}
+    </pre>
+    <pre>
+Status: 404 Not Found
+"No movies found in this genre"
+    </pre>
+
+    <h3>/movies/directors/:directorName</h3>
+    <p><strong>GET /movies/directors/:directorName</strong></p>
+    <p><strong>Description:</strong> Get movies by director</p>
+    <pre>
+Request Parameters:
+{
+  "directorName": "string"
+}
+    </pre>
+    <p><strong>Response:</strong></p>
+    <pre>
+Status: 200 OK
+{
+  "name": "string",
+  "bio": "string",
+  "birth": "date"
+}
+    </pre>
+    <pre>
+Status: 404 Not Found
+"No movies found for this director"
+    </pre>
+
+    <h3>/</h3>
+    <p><strong>GET /</strong></p>
+    <p><strong>Description:</strong> Welcome message</p>
+    <p><strong>Response:</strong></p>
+    <pre>
+Status: 200 OK
+"Welcome to Strobe!"
+    </pre>
+
+    <h3>Error Handling</h3>
+    <p><strong>Error Handling Middleware</strong></p>
+    <p><strong>Description:</strong> Error handler middleware for internal server errors</p>
+    <pre>
+Status: 500 Internal Server Error
+"Internal Server Error: ${err.message}"
+    </pre>
 </body>
 </html>
