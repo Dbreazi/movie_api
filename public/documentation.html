@@ -67,102 +67,100 @@
     <pre>
 Request Body:
 {
-  "name": "string"
+  "Username": "newuser",
+  "Password": "password123",
+  "Email": "newuser@example.com",
+  "Birthday": "1990-01-01"
 }
     </pre>
     <p><strong>Response:</strong></p>
     <pre>
 Status: 201 Created
 {
-  "id": "string",
-  "name": "string",
-  "favouriteMovies": []
+  "Username": "newuser",
+  "Password": "hashed_password",
+  "Email": "newuser@example.com",
+  "Birthday": "1990-01-01",
+  "FavoriteMovies": []
 }
     </pre>
     <pre>
 Status: 400 Bad Request
-"users need names"
+"Username already exists"
     </pre>
 
-    <p><strong>PUT /users/:id</strong></p>
-    <p><strong>Description:</strong> Update a user by ID</p>
+    <p><strong>PUT /users/:Username</strong></p>
+    <p><strong>Description:</strong> Update a user's info by username</p>
     <pre>
-Request Parameters:
-{
-  "id": "number"
-}
 Request Body:
 {
-  "name": "string"
+  "Username": "updateduser",
+  "Password": "newpassword123",
+  "Email": "updateduser@example.com",
+  "Birthday": "1991-02-02"
 }
     </pre>
     <p><strong>Response:</strong></p>
     <pre>
 Status: 200 OK
 {
-  "id": "number",
-  "name": "string",
-  "favouriteMovies": ["array"]
+  "Username": "updateduser",
+  "Password": "hashed_password",
+  "Email": "updateduser@example.com",
+  "Birthday": "1991-02-02",
+  "FavoriteMovies": ["array_of_movie_ids"]
 }
     </pre>
     <pre>
-Status: 400 Bad Request
+Status: 404 Not Found
 "No such user"
     </pre>
 
-    <p><strong>POST /users/:id/:movieTitle</strong></p>
-    <p><strong>Description:</strong> Add a favorite movie for a user by ID</p>
-    <pre>
-Request Parameters:
-{
-  "id": "number",
-  "movieTitle": "string"
-}
-    </pre>
+    <p><strong>POST /users/:Username/movies/:MovieID</strong></p>
+    <p><strong>Description:</strong> Add a movie to a user's list of favorites</p>
     <p><strong>Response:</strong></p>
     <pre>
 Status: 200 OK
-"${movieTitle} has been added to user ${id}'s array"
+{
+  "Username": "user",
+  "Password": "hashed_password",
+  "Email": "user@example.com",
+  "Birthday": "YYYY-MM-DD",
+  "FavoriteMovies": ["array_with_new_movie_id"]
+}
     </pre>
     <pre>
-Status: 400 Bad Request
+Status: 404 Not Found
 "No such user"
     </pre>
 
-    <p><strong>DELETE /users/:id/:movieTitle</strong></p>
-    <p><strong>Description:</strong> Remove a favorite movie for a user by ID</p>
-    <pre>
-Request Parameters:
-{
-  "id": "number",
-  "movieTitle": "string"
-}
-    </pre>
+    <p><strong>DELETE /users/:Username/movies/:MovieID</strong></p>
+    <p><strong>Description:</strong> Remove a movie from a user's list of favorites</p>
     <p><strong>Response:</strong></p>
     <pre>
 Status: 200 OK
-"${movieTitle} has been removed from ${id}'s array"
+{
+  "Username": "user",
+  "Password": "hashed_password",
+  "Email": "user@example.com",
+  "Birthday": "YYYY-MM-DD",
+  "FavoriteMovies": ["array_without_movie_id"]
+}
     </pre>
     <pre>
-Status: 400 Bad Request
+Status: 404 Not Found
 "No such user"
     </pre>
 
-    <p><strong>DELETE /users/:id</strong></p>
-    <p><strong>Description:</strong> Delete a user by ID</p>
-    <pre>
-Request Parameters:
-{
-  "id": "number"
-}
-    </pre>
+    <p><strong>DELETE /users/:Username</strong></p>
+    <p><strong>Description:</strong> Delete a user by username</p>
     <p><strong>Response:</strong></p>
     <pre>
 Status: 200 OK
-"user ${id} has been deleted"
+"User {Username} has been deleted"
     </pre>
     <pre>
-Status: 400 Bad Request
+Status: 404 Not Found
 "No such user"
     </pre>
 
@@ -174,20 +172,19 @@ Status: 400 Bad Request
 Status: 200 OK
 [
   {
-    "id": "uuid",
-    "title": "string",
-    "description": "string",
-    "genre": {
-      "name": "string",
-      "description": "string"
+    "Title": "string",
+    "Description": "string",
+    "Genre": {
+      "Name": "string",
+      "Description": "string"
     },
-    "director": {
-      "name": "string",
-      "bio": "string",
-      "birth": "date"
+    "Director": {
+      "Name": "string",
+      "Bio": "string"
     },
-    "imageURL": "url",
-    "featured": "boolean"
+    "Actors": ["array_of_actors"],
+    "ImagePath": "url",
+    "Featured": "boolean"
   }
 ]
     </pre>
@@ -205,20 +202,19 @@ Request Parameters:
     <pre>
 Status: 200 OK
 {
-  "id": "uuid",
-  "title": "string",
-  "description": "string",
-  "genre": {
-    "name": "string",
-    "description": "string"
+  "Title": "string",
+  "Description": "string",
+  "Genre": {
+    "Name": "string",
+    "Description": "string"
   },
-  "director": {
-    "name": "string",
-    "bio": "string",
-    "birth": "date"
+  "Director": {
+    "Name": "string",
+    "Bio": "string"
   },
-  "imageURL": "url",
-  "featured": "boolean"
+  "Actors": ["array_of_actors"],
+  "ImagePath": "url",
+  "Featured": "boolean"
 }
     </pre>
     <pre>
@@ -238,10 +234,23 @@ Request Parameters:
     <p><strong>Response:</strong></p>
     <pre>
 Status: 200 OK
-{
-  "name": "string",
-  "description": "string"
-}
+[
+  {
+    "Title": "string",
+    "Description": "string",
+    "Genre": {
+      "Name": "string",
+      "Description": "string"
+    },
+    "Director": {
+      "Name": "string",
+      "Bio": "string"
+    },
+    "Actors": ["array_of_actors"],
+    "ImagePath": "url",
+    "Featured": "boolean"
+  }
+]
     </pre>
     <pre>
 Status: 404 Not Found
@@ -260,15 +269,50 @@ Request Parameters:
     <p><strong>Response:</strong></p>
     <pre>
 Status: 200 OK
-{
-  "name": "string",
-  "bio": "string",
-  "birth": "date"
-}
+[
+  {
+    "Title": "string",
+    "Description": "string",
+    "Genre": {
+      "Name": "string",
+      "Description": "string"
+    },
+    "Director": {
+      "Name": "string",
+      "Bio": "string"
+    },
+    "Actors": ["array_of_actors"],
+    "ImagePath": "url",
+    "Featured": "boolean"
+  }
+]
     </pre>
     <pre>
 Status: 404 Not Found
 "No movies found for this director"
+    </pre>
+
+    <h3>/directors/:Name</h3>
+    <p><strong>GET /directors/:Name</strong></p>
+    <p><strong>Description:</strong> Return data about a director by name</p>
+    <pre>
+Request Parameters:
+{
+  "Name": "string"
+}
+    </pre>
+    <p><strong>Response:</strong></p>
+    <pre>
+Status: 200 OK
+{
+  "Name": "string",
+  "Bio": "string",
+  "BirthDate": "date"
+}
+    </pre>
+    <pre>
+Status: 404 Not Found
+"No such director"
     </pre>
 
     <h3>/</h3>
