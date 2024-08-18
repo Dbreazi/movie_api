@@ -15,8 +15,16 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
-// Connect to MongoDB
-mongoose.connect('mongodb://localhost:27017/cfDB', {
+//Connect to MongoDB
+//mongoose.connect('mongodb://localhost:27017/cfDB', {
+  //useNewUrlParser: true,
+  //useUnifiedTopology: true
+//})
+//.then(() => console.log('MongoDB connected'))
+//.catch(err => console.error('MongoDB connection error:', err));
+
+//Connect to MongoDB Atlas connection
+mongoose.connect(process.env.CONNECTION_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
@@ -291,4 +299,6 @@ const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
+
+
 
