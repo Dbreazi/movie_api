@@ -16,22 +16,24 @@ passport.use(
         async (username, password, callback) => {
             console.log(`${username} ${password}`);
             await Users.findOne({ Username: username })
-            .then ((user) => {
+            .then((user) => {
                 if (!user) {
                     console.log('incorrect username');
                     return callback(null, false, {
                         message: 'Incorrect username or password.',
                     });
                 }
+                if (!user.validatePassword(password)) {
+                    console.log('incorrect password');
+                    return callback(null, false, { message: 'Incorrect password.' });
+                }
                 console.log('finished');
                 return callback(null, user);
             })
             .catch((error) => {
-                if (error) {
-                    console.log(error);
-                    return callback(error);
-                }
-            })
+                console.log(error);
+                return callback(error);
+            });
         }
     )
 );
@@ -45,6 +47,6 @@ passport.use(new JWTStrategy({
         return callback(null, user);
     })
     .catch((error) => {
-        return callback(error)
+        return callback(error);
     });
-})); 
+}));
