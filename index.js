@@ -15,13 +15,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
-//Connect to MongoDB
-//mongoose.connect('mongodb://localhost:27017/cfDB', {
-  //useNewUrlParser: true,
-  //useUnifiedTopology: true
-//})
-//.then(() => console.log('MongoDB connected'))
-//.catch(err => console.error('MongoDB connection error:', err));
+/*Connect to MongoDB
+mongoose.connect('mongodb://localhost:27017/cfDB', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
+.then(() => console.log('MongoDB connected'))
+.catch(err => console.error('MongoDB connection error:', err));*/
 
 //Connect to MongoDB Atlas connection
 mongoose.connect(process.env.CONNECTION_URI, {
@@ -29,7 +29,7 @@ mongoose.connect(process.env.CONNECTION_URI, {
   useUnifiedTopology: true
 })
 .then(() => console.log('MongoDB connected'))
-.catch(err => console.error('MongoDB connection error:', err));
+.catch(err => console.error('MongoDB connection error:', err)); 
 
 const cors = require('cors');
 app.use(cors());
