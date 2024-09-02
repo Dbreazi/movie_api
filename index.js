@@ -236,7 +236,7 @@ app.get('/movies', passport.authenticate('jwt', { session: false }), async (req,
 });
 
 // READ movie by title
-app.get('/movies/:title', async (req, res) => {
+app.get('/movies/:title', passport.authenticate('jwt', { session: false }), async (req, res) => {
   try {
     const movieTitle = req.params.title;
     const movie = await Movies.findOne({ Title: { $regex: new RegExp(`^${movieTitle}$`, 'i') } });
