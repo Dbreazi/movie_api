@@ -264,7 +264,7 @@ app.get('/movies/:title', async (req, res) => {
 });
 
 /* placeholder comment */
-/*
+
 
 
 // READ genre by name (case-insensitive)
