@@ -247,8 +247,8 @@ app.get('/movies', passport.authenticate('jwt', { session: false }), async (req,
 });
 */
 
-// READ movie by title
-app.get('/movies/:title', async (req, res) => {
+// READ movie by title 
+app.get('/movies/:title', passport.authenticate('jwt', { session: false }), async (req, res) => {
   try {
     const movieTitle = req.params.title;
     const movie = await Movies.findOne({ Title: { $regex: new RegExp(`^${movieTitle}$`, 'i') } });
@@ -267,7 +267,7 @@ app.get('/movies/:title', async (req, res) => {
 
 
 
-// READ genre by name (case-insensitive)
+// READ genre by name
 app.get('/genres/:Name', passport.authenticate('jwt', { session: false }), async (req, res) => {
   try {
     const genreName = req.params.Name;
@@ -282,7 +282,6 @@ app.get('/genres/:Name', passport.authenticate('jwt', { session: false }), async
     res.status(500).send('Error: ' + err);
   }
 });
-
 // READ director by name (case-insensitive)
 app.get('/directors/:Name', passport.authenticate('jwt', { session: false }), async (req, res) => {
   try {
