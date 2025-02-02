@@ -1,52 +1,64 @@
-const passport = require('passport'),
-    LocalStrategy = require('passport-local').Strategy,
-    Models = require('./models.js'),
-    passportJWT = require('passport-jwt');
+/**
+ * @module passport
+ * @description Configures Passport strategies for authentication.
+ */
 
-let Users = Models.User,
-    JWTStrategy = passportJWT.Strategy,
-    ExtractJWT = passportJWT.ExtractJwt;
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+const Models = require('./models.js');
+const passportJWT = require('passport-jwt');
 
+const Users = Models.User;
+const JWTStrategy = passportJWT.Strategy;
+const ExtractJWT = passportJWT.ExtractJwt;
+
+/**
+ * Configures Passport's local authentication strategy.
+ * Authenticates users using a username and password.
+ */
 passport.use(
-    new LocalStrategy(
-        {
-            usernameField: 'Username',
-            passwordField: 'Password',
-        },
-        async (username, password, callback) => {
-            console.log(`${username} ${password}`);
-            await Users.findOne({ Username: username })
-            .then((user) => {
-                if (!user) {
-                    console.log('incorrect username');
-                    return callback(null, false, {
-                        message: 'Incorrect username or password.',
-                    });
-                }
-                if (!user.validatePassword(password)) {
-                    console.log('incorrect password');
-                    return callback(null, false, { message: 'Incorrect password.' });
-                }
-                console.log('finished');
-                return callback(null, user);
-            })
-            .catch((error) => {
-                console.log(error);
-                return callback(error);
-            });
-        }
-    )
+  new LocalStrategy(
+    {
+      usernameField: 'Username',
+      passwordField: 'Password',
+    },
+    async (username, password, callback) => {
+      console.log(`${username} ${password}`);
+      await Users.findOne({ Username: username })
+        .then((user) => {
+          if (!user) {
+            console.log('Incorrect username');
+            return callback(null, false, { message: 'Incorrect username or password.' });
+          }
+          if (!user.validatePassword(password)) {
+            console.log('Incorrect password');
+            return callback(null, false, { message: 'Incorrect password.' });
+          }
+          console.log('Authentication successful');
+          return callback(null, user);
+        })
+        .catch((error) => {
+          console.log(error);
+          return callback(error);
+        });
+    }
+  )
 );
 
-passport.use(new JWTStrategy({
-    jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-    secretOrKey: 'your_jwt_secret'
-}, async (jwtPayload, callback) => {
-    return await Users.findById(jwtPayload._id)
-    .then((user) => {
-        return callback(null, user);
-    })
-    .catch((error) => {
-        return callback(error);
-    });
-}));
+/**
+ * Configures Passport's JWT authentication strategy.
+ * Extracts JWT from the request and verifies user identity.
+ */
+passport.use(
+  new JWTStrategy(
+    {
+      jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
+      secretOrKey: 'your_jwt_secret',
+    },
+    async (jwtPayload, callback) => {
+      return await Users.findById(jwtPayload._id)
+        .then((user) => callback(null, user))
+        .catch((error) => callback(error));
+    }
+  )
+);
